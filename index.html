@@ -61,14 +61,16 @@
         var strikesAddedOnceOrLess = eligibleStrikes.filter(function(element){
           return !element.addedTwice;
         });
-        var strikeToAdd = getRandomArrayElement(strikesAddedOnceOrLess);
-        if (strikeToAdd.addedOnce) {
-          selectedStrikes.push(strikeToAdd);
-          strikeToAdd.addedTwice = true;
-        }
-        else { //hasn't been added yet
-          selectedStrikes.push(strikeToAdd);
-          strikeToAdd.addedOnce = true;
+        if (strikesAddedOnceOrLess.length > 0) {
+          var strikeToAdd = getRandomArrayElement(strikesAddedOnceOrLess);
+          if (strikeToAdd.addedOnce) {
+            selectedStrikes.push(strikeToAdd);
+            strikeToAdd.addedTwice = true;
+          }
+          else { //hasn't been added yet
+            selectedStrikes.push(strikeToAdd);
+            strikeToAdd.addedOnce = true;
+          }
         }
       }
 
