@@ -5,21 +5,22 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Robo Kihon!</title>
+  <link rel="stylesheet" type="text/css" href="main.css" />
   <script type="text/javascript" src="ranks.js"></script>
   <script type="text/javascript" src="techniques.js"></script>
   <script type="text/javascript">
 
     function generateCombination(){
-      var blocksToAdd = document.getElementById("blocksToAdd").value;
-      var handTechsToAdd = document.getElementById("handTechsToAdd").value;
-      var legTechsToAdd = document.getElementById("legTechsToAdd").value;
-      var rankSelector = document.getElementById("rankSelector");
+      var blocksToAdd = document.getElementById('blocksToAdd').value;
+      var handTechsToAdd = document.getElementById('handTechsToAdd').value;
+      var legTechsToAdd = document.getElementById('legTechsToAdd').value;
+      var rankSelector = document.getElementById('rankSelector');
       var selectedRank = rankSelector.options[rankSelector.selectedIndex].value;
 
       var combination = [];
       Array.prototype.push.apply(combination, selectBlocks(blocksToAdd, selectedRank));
-      //Array.prototype.push.apply(combination, selectHandTechniques(handTechsToAdd, selectedRank));
-      //Array.prototype.push.apply(combination, selectLegTechniques(legTechsToAdd, selectedRank));
+      Array.prototype.push.apply(combination, selectStrikes(techniques.handStrikes, handTechsToAdd, selectedRank));
+      Array.prototype.push.apply(combination, selectStrikes(techniques.legStrikes, legTechsToAdd, selectedRank));
 
       insertCombination(combination);
     }
@@ -46,21 +47,53 @@
       return selectedBlocks;
     }
 
-    function insertCombination(combination){
-      var html = combination.map(function(element){
-        
+    function selectStrikes(strikes, numToAdd, selectedRank){
+      strikes.forEach(function(element){
+        element.addedOnce = false;
+        element.addedTwice = false;
       });
+      var eligibleStrikes = strikes.filter(function(element){
+        return element.minimumRank <= selectedRank;
+      });      
+
+      var selectedStrikes = [];
+      for (var i = 0; i < numToAdd; i++){
+        var strikesAddedOnceOrLess = eligibleStrikes.filter(function(element){
+          return !element.addedTwice;
+        });
+        var strikeToAdd = getRandomArrayElement(strikesAddedOnceOrLess);
+        if (strikeToAdd.addedOnce) {
+          selectedStrikes.push(strikeToAdd);
+          strikeToAdd.addedTwice = true;
+        }
+        else { //hasn't been added yet
+          selectedStrikes.push(strikeToAdd);
+          strikeToAdd.addedOnce = true;
+        }
+      }
+
+      return selectedStrikes;
+    }
+
+    function insertCombination(combination){
+      var html = ['<ol class="combination">'];
+      combination.forEach(function(element){
+        html.push('<li>' + element.name + '</li>');
+      });
+      html.push('</ol>');
+      
+      document.getElementById('output-list').innerHTML = html.join('');
     }
 
     function initializeRankSelector(){
-      var rankSelector = document.getElementById("rankSelector");
-      var defaultOption = document.createElement("option");
-      defaultOption.value = "99";
-      defaultOption.text = "All";
+      var rankSelector = document.getElementById('rankSelector');
+      var defaultOption = document.createElement('option');
+      defaultOption.value = '99';
+      defaultOption.text = 'All';
       rankSelector.add(defaultOption, null);
 
-      techniques.forEach(function(name, index){
-        var option = document.createElement("option");
+      ranks.forEach(function(name, index){
+        var option = document.createElement('option');
         option.value = index;
         option.text = name;
         rankSelector.add(option, null);
@@ -68,9 +101,9 @@
     }
 
     function initializeInputs(){
-      document.getElementById("blocksToAdd").value = 1;
-      document.getElementById("handTechsToAdd").value = 2;
-      document.getElementById("legTechsToAdd").value = 1;
+      document.getElementById('blocksToAdd').value = 1;
+      document.getElementById('handTechsToAdd').value = 2;
+      document.getElementById('legTechsToAdd').value = 1;
     }
 
     function getRandomInt(max) {
@@ -86,8 +119,8 @@
     }
 
     function domReady(fn) {
-      document.addEventListener("DOMContentLoaded", fn);
-      if (document.readyState === "interactive" || document.readyState === "complete" ) {
+      window.addEventListener('DOMContentLoaded', fn);
+      if (document.readyState === 'interactive' || document.readyState === 'complete' ) {
         fn();
       }
     }
@@ -96,7 +129,7 @@
       initializeRankSelector();
       initializeInputs();
 
-      document.getElementById("generateButton").addEventListener("click", function(){
+      document.getElementById('generateButton').addEventListener('click', function(){
         generateCombination();
       });
     });
@@ -104,21 +137,24 @@
 </head>
 <body>
   <header>
-    <h1>Robo Kihon!</h1>
+    <img class="logo" src="robot.png"/><h1 class="title">Robo Kihon!</h1>
   </header>
-  <div class="inputs">
-    <label for="rankSelector">Rank:</label>
-    <select id="rankSelector" name="rankSelector"></select>
-    <label for="blocksToAdd">Blocks:</label>
-    <input type="number" id="blocksToAdd" name="blocksToAdd" size="10" />
-    <label for="handTechsToAdd">Hand techniques:</label>
-    <input type="number" id="handTechsToAdd" name="handTechsToAdd" size="10" />
-    <label for="legTechsToAdd">Leg techniques:</label>
-    <input type="number" id="legTechsToAdd" name="legTechsToAdd" size="10" />
-    <button class="generate-button" id="generateButton">Go!</button>
-  </div>
-  <div class="output">
-
+  <div class="content">
+    <div class="inputs">
+      <label for="rankSelector">Rank:</label>
+      <select id="rankSelector" name="rankSelector"></select>
+      <label for="blocksToAdd">Blocks:</label>
+      <input type="number" id="blocksToAdd" name="blocksToAdd" />
+      <label for="handTechsToAdd">Hand techniques:</label>
+      <input type="number" id="handTechsToAdd" name="handTechsToAdd" />
+      <label for="legTechsToAdd">Leg techniques:</label>
+      <input type="number" id="legTechsToAdd" name="legTechsToAdd" />
+      <button class="generate-button" id="generateButton">Go!</button>
+    </div>
+    <div class="output">
+      <h2>Combination:</h2>
+      <div id="output-list"><span class="placeholder">Click or tap the Go! button to generate a combination</span></div>
+    </div>
   </div>
 </body>
 </html>

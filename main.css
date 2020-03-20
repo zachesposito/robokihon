@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Shojumaru&display=swap');
+
+body {
+  font-family: 'Roboto', sans-serif;
+  font-size:20px;
+  color:#333;
+}
+header {
+  text-align:center;
+}
+
+.logo {
+  max-width: 110px;
+  vertical-align: middle;
+  margin: 0 20px;
+}
+
+.title {
+  display:inline-block;
+  font-family: 'Shojumaru', sans-serif;
+}
+
+h2 {
+  margin-top:0;
+}
+
+label {
+  display:block;
+  margin-bottom:.5em;
+}
+
+input, select {
+  max-width:100px;
+  margin-bottom:1em;
+  font-size:20px;
+}
+
+.generate-button {
+  padding:1em 2em;
+  display:block;
+  font-size:20px;
+}
+
+.content:after {
+  content:'';
+  display:table;
+  clear:both;
+}
+.inputs, .output {
+  padding:1em;
+}
+.combination li {
+  margin-bottom:1em;
+}
+.placeholder {
+  color:#777;
+}
+
+@media (min-width: 550px){
+  .output {
+    min-width:auto;
+  }
+  
+  .inputs, .output {
+    float:left;
+  }
+
+  header {
+    text-align:left;
+  }
+  .logo {
+    max-width:150px;
+  }
+}
